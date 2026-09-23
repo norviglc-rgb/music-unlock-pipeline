@@ -120,7 +120,7 @@ USAGE
 while [ $# -gt 0 ]; do
   case "$1" in
     -h|--help)          show_usage; exit 0 ;;
-    --auto|--pilot|--check-idempotent|--sync-symlinks|--unlink-symlinks|\
+    --auto|--check-idempotent|--sync-symlinks|--unlink-symlinks|\
     --refresh-failed|--manifest-init|--manifest-check|--audit)
       set_action "$1" ;;
     --pilot)
