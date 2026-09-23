@@ -33,6 +33,7 @@ MMKV*
 
 # ===== 本地杂物 =====
 .mimosa/
+__pycache__/
 .env
 .DS_Store
 out/
