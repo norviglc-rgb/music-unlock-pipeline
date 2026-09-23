@@ -1,0 +1,40 @@
+# ===== 运行时状态/日志/报告(默认在 <music-root>/.pipeline/, 仓库内误运行也挡) =====
+.pipeline/
+state/
+logs/
+reports/
+*.jsonl
+*.lock
+*.pid
+manifest*
+deleted.log*
+SHA256SUMS.txt
+cron-append.txt
+crontab-backup*
+near-dup-report-*
+near-dup-*.csv
+fail-summary-latest.txt
+*.csv
+
+# ===== 解锁器二进制与发行包(绝不入库, 见 README 获取指引) =====
+um
+um.exe
+um-linux-*
+um-darwin-*
+um-windows-*
+*.tar.gz
+dist/
+
+# ===== 密钥/密钥库(绝不入库) =====
+keys/
+*.keystore
+*.db
+MMKV*
+
+# ===== 本地杂物 =====
+.mimosa/
+.env
+.DS_Store
+out/
+scratch/
+_frn_*.py

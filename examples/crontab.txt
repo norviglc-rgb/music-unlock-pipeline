@@ -1,0 +1,16 @@
+# 示例: 音乐库流水线定时任务(bin/install-cron.sh 的输入格式)
+# 用法: 把 /opt/music-unlock-pipeline 与 /data/Music 替换为你的实际路径后:
+#   bin/install-cron.sh examples/crontab.txt
+# 说明:
+#   - `date +%-d` 判断: 每月 1 日跳过(给文件系统维护/scrub 类任务让窗口, 可删);
+#   - 日志重定向到 <music-root>/.pipeline/logs/ 下, 脚本自带 >20MB 三代轮转;
+#   - near-dup.py 只产报告零删除; dedup-exact.sh --auto 只删 _unlocked/ 内副本。
+
+# 每日 05:17 全量增量转换(避开每月 1 日)
+17 5 * * * [ "$(date +%-d)" != "1" ] && /opt/music-unlock-pipeline/bin/music-convert.sh --music-root /data/Music --auto >> /data/Music/.pipeline/logs/cron-convert.log 2>&1
+
+# 每周日 05:47 精确去重(只删 _unlocked/ 内副本, 留删除日志)
+47 5 * * 0 [ "$(date +%-d)" != "1" ] && /opt/music-unlock-pipeline/bin/dedup-exact.sh --music-root /data/Music --auto >> /data/Music/.pipeline/logs/cron-dedup.log 2>&1
+
+# 每月 2 日 06:07 近似重复报告(零删除, 人工裁决)
+7 6 2 * * /opt/music-unlock-pipeline/scripts/near-dup.py --music-root /data/Music >> /data/Music/.pipeline/logs/cron-neardup.log 2>&1

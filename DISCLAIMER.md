@@ -1,0 +1,35 @@
+# 免责声明 / Disclaimer
+
+**使用本仓库的任何代码前请完整阅读本文。下载、克隆或运行即表示你已理解并接受以下全部条款。**
+
+## 1. 目的限定
+
+本项目（编排脚本集）仅用于对**个人合法取得**的音乐文件做**本地格式互操作**——即在你自己拥有权利的设备上，把已购/已下载的个人音频从加密容器格式转为可本地播放的通用格式，供**自建媒体库、自用播放**。
+
+本工具**不用于**、也不得用于任何形式的分发、共享、传播、公开表演或盗版。将解锁所得文件提供给他人、上传至公网、用于商业用途，均超出本工具的设计目的与授权范围。
+
+## 2. 不附带任何密钥或 DRM 对抗组件
+
+本仓库**不附带、不分发**任何解密密钥、密钥数据库、DRM 对抗组件或规避技术本体。本仓库是纯编排层（Bash/Python 脚本）：状态管理、幂等调度、原件保护、去重与台账。
+
+核心解锁能力来自**独立的第三方开源项目 unlock-music**（CLI 工具 `um`，MIT 许可）。该工具由**用户自行获取、自行安装**，其获取方式与使用行为的合规责任**完全由用户自行承担**。本项目与 unlock-music 项目**无隶属、无代理、无背书关系**，也不修改、不再分发其任何代码或二进制。
+
+## 3. 会员权益与服务条款边界
+
+解锁行为只应在以下前提下进行：相关音乐平台的**会员权益仍在有效期内**、内容属于你**已在平台获得授权收听**的范围。会员权益失效后，你应当停止使用已解锁文件并将其删除。不得将解锁所得文件二次分发。同时你必须遵守音乐服务商的用户协议与服务条款——多数平台条款禁止规避其技术措施，是否使用本工具由你自行评估并自担后果。
+
+## 4. 法律遵从
+
+你必须遵守所在司法辖区的法律法规。请注意：对技术保护措施的规避在部分辖区有专门的法律责任（例如美国 DMCA 的反规避条款、各法域的著作权法及其实施条例）。在依赖本项目之前，请自行了解并（如有必要）咨询执业律师。本项目作者不提供法律意见。
+
+## 5. 无担保与责任划分
+
+本软件按「现状」提供（与 MIT 许可证的 AS IS 条款一致），不附带任何明示或默示的担保。在任何情况下，作者与贡献者均不对因使用或滥用本工具导致的任何直接或间接损失负责，包括但不限于：数据丢失、账号风险、服务封禁、设备损坏、法律纠纷及任何经济损害。
+
+## 6. 下架与联系
+
+如权利人认为本仓库内容侵犯其合法权益，请通过仓库的 Issues 联系，我们将在确认后及时处理（包括删除相关内容或配合下架）。
+
+---
+
+*English summary: This repository is an orchestration-only tool for local, personal, non-distributive format interoperability of legally obtained music files. It ships no keys, no DRM circumvention components, and no unlock-music code or binaries; users obtain unlock-music (MIT) themselves and bear full responsibility for their own use. Compliance with local law and music-service terms is the user's obligation. Provided AS IS, no warranty; use at your own risk.*
