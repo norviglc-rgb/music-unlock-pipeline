@@ -54,6 +54,10 @@ mkdir -p Music
 # 1) 指定解锁器位置(三选一)
 export UM_BIN=/path/to/um          # 或每次加 --um-path /path/to/um
 
+# 小盘机器注: 可用空间不足默认阈值(500G)时, --auto/--limit 会拒绝新转换、
+# 只做同步与自检后正常退出(输出里有 pending=N)。先把阈值调小再跑:
+# export MIN_FREE_GB=10
+
 # 2) 空库自检: 机器可判终态
 bash bin/music-convert.sh --music-root ./Music --check-idempotent
 # => total=0 done=0 permanent_skip=0 pending=0   (退出码 0)
@@ -87,6 +91,10 @@ python3 scripts/near-dup.py --music-root ./Music
 
 export UM_BIN=/path/to/um                 # or pass --um-path, or put um on PATH
 
+# Small-disk note: with less free space than the default gate (500G), --auto/--limit
+# refuse new conversions and exit normally (pending=N in output). Lower it first:
+# export MIN_FREE_GB=10
+
 mkdir -p Music                            # your music library root (treated read-only)
 
 # Machine-checkable idempotence probe (empty library):
@@ -118,13 +126,13 @@ State, logs and reports live under `<music-root>/.pipeline/`. CLI options take p
 | `EXTRA_UM_ARGS` | 空 | 额外 um 参数（空格分词；路径含空格不支持） |
 | `UM_PARALLEL` | `4` | 并发 worker 数 |
 | `UM_TIMEOUT` | `600` | 单文件超时（秒；超时归为瞬时失败可重试） |
-| `MIN_FREE_GB` | `500` | 可用空间（GiB）低于该值时拒绝新转换 |
+| `MIN_FREE_GB` | `500` | 可用空间（GiB）低于该值时拒绝新转换（本轮任务列表置空并提示，随后的 `--auto` 正常退出 0） |
 
 ### music-convert.sh 动作一览
 
 `--auto`（全量增量）· `--limit N`（小样本轮转抽样）· `--pilot [N]`（每格式前 N 个）· `--include <file>`（NUL 分隔明细）· `--worker <rel>`（内部单文件）· `--check-idempotent`（幂等终态）· `--sync-symlinks` / `--unlink-symlinks`（镜像农场）· `--refresh-failed`（重置永久失败）· `--manifest-init` / `--manifest-check`（原件保护基线）· `--audit`（产物 ffprobe 全检）
 
-完整帮助：`bash bin/music-convert.sh --help`；退出码语义：`0` 成功 / `1` 用法错误或 `pending>0` / `2` 主锁占用 / `3` 原件保护自检失败 / `4` 缺 um。
+完整帮助：`bash bin/music-convert.sh --help`；退出码语义：`0` 成功 / `1` 用法错误或 `pending>0`（后者仅 `--check-idempotent`；`--auto`/`--limit`/`--pilot`/`--include` 等转换动作在仍有 pending 源时同样正常退出 0，终态以 `--check-idempotent` 复核为准）/ `2` 主锁占用 / `3` 原件保护自检失败 / `4` 缺 um。
 
 ## 定时任务
 
