@@ -32,7 +32,6 @@ export LC_ALL=C
 
 # ---------------------------------------------------------------- 配置解析
 # 优先级: CLI 选项 > 环境变量 > 默认值。所有默认值均通用化, 不含任何机器私有路径。
-SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
 SCRIPT_SELF=$(python3 -c 'import os,sys;print(os.path.realpath(sys.argv[1]))' "${BASH_SOURCE[0]}" 2>/dev/null || echo "${BASH_SOURCE[0]}")
 
 MUSIC_ROOT=${MUSIC_ROOT:-./Music}
@@ -446,7 +445,7 @@ run_with_timeout() { # $1=秒数, 其余=命令
 
 # ---------------------------------------------------------------- worker
 do_worker() { # $1 = rel path (相对 MUSIC_ROOT)
-  local rel=$1 src base stem dirrel outdir outd logf rc dest="" dsz ff="" cand="" abs
+  local rel=$1 src base stem dirrel outdir logf rc dest="" dsz ff="" cand="" abs
   local look status attempts new_attempts taillog errclass errline err_meta
   local meta_degraded=0
   src="$MUSIC_ROOT/$rel"
@@ -478,7 +477,7 @@ do_worker() { # $1 = rel path (相对 MUSIC_ROOT)
     if cand=$(disk_find_output "$rel" probe); then
       dsz=$(file_size "$cand")
       ff=$(ffprobe_audio "$cand")
-      state_append "$rel" "$srcsize" done "$(rel_of "$cand")" "$dsz" "" "" "" 0
+      state_append "$rel" "$srcsize" "done" "$(rel_of "$cand")" "$dsz" "" "" "" 0
       log "[worker] $rel -> done(disk) out=$cand ffprobe=$ff"
       return 0
     fi
@@ -551,7 +550,7 @@ except Exception:
     dsz=$(file_size "$dest")
     err_meta="meta=0"
     [ "$meta_degraded" = "1" ] && err_meta="meta=0,meta-degraded"
-    state_append "$rel" "$srcsize" done "$(rel_of "$dest")" "$dsz" "" "" "$err_meta" "$attempts"
+    state_append "$rel" "$srcsize" "done" "$(rel_of "$dest")" "$dsz" "" "" "$err_meta" "$attempts"
     log "[worker] $rel -> done out=$dest codec_dur=$ff"
     rm -f "$logf"; return 0
   fi
@@ -562,7 +561,7 @@ except Exception:
       dsz=$(file_size "$cand")
       err_meta="outpath-fallback"
       [ "$meta_degraded" = "1" ] && err_meta="outpath-fallback,meta-degraded"
-      state_append "$rel" "$srcsize" done "$(rel_of "$cand")" "$dsz" "" "" "$err_meta" "$attempts"
+      state_append "$rel" "$srcsize" "done" "$(rel_of "$cand")" "$dsz" "" "" "$err_meta" "$attempts"
       log "[worker] $rel -> done(fallback) out=$cand ffprobe=$ff"
       rm -f "$logf"; return 0
     fi
@@ -580,7 +579,7 @@ except Exception:
       *"permission denied"*|*"Permission denied"*) errclass=permission ;;
       *MusicEx*|*"magic mismatch"*) errclass=no-key ;;
       *"unexpected EOF"*|*invalid*|*corrupt*|*malformed*|*sniff*|*unsupported*|*"bad magic"*) errclass=corrupt ;;
-      *key*|*Key*|*KEY*|*ekey*|*MMKV*|*mmkv*|*cex*|*CEX*|*STag*|*stag*|*QMC*|*kgg*|*KGG*) errclass=no-key ;;
+      *key*|*Key*|*KEY*|*MMKV*|*mmkv*|*cex*|*CEX*|*STag*|*stag*|*QMC*|*kgg*|*KGG*) errclass=no-key ;;
       *"no such file"*|*"input/output error"*|*"I/O error"*) errclass=io ;;
     esac
   fi
@@ -783,10 +782,10 @@ do_check() {
   printf 'total=%d done=%d permanent_skip=%d pending=%d\n' "$total" "$done_c" "$perm_c" "$pend_c"
   if [ "$pend_c" -gt 0 ]; then
     printf 'pending=%d\n' "$pend_c"
-    exit 1
+    return 1
   fi
   printf 'pending=0\n'
-  exit 0
+  return 0
 }
 
 # ---------------------------------------------------------------- symlink 镜像
@@ -1009,7 +1008,7 @@ main() {
     --limit)             rotate_cron_log "$LOGS/cron-convert.log"; do_limit "$LIMIT_N" ;;
     --include)           rotate_cron_log "$LOGS/cron-convert.log"; do_include "$INCLUDE_FILE" ;;
     --worker)            do_worker "$WORKER_REL" ;;
-    --check-idempotent)  do_check ;;
+    --check-idempotent)  do_check; exit $? ;;
     --sync-symlinks)     do_sync_entry ;;
     --unlink-symlinks)   do_unlink_symlinks ;;
     --refresh-failed)    do_refresh_failed ;;

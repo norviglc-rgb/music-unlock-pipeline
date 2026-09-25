@@ -33,8 +33,6 @@
 set -u -o pipefail
 export LC_ALL=C
 
-SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
-
 MUSIC_ROOT=${MUSIC_ROOT:-./Music}
 PIPELINE_HOME=${PIPELINE_HOME:-}
 TRASH_ROOT=${TRASH_ROOT:-}
